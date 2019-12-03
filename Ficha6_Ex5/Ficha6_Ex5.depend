@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1575395406 source:c:\users\night\desktop\ficha6\ficha6_ex5\main.c
+	<stdio.h>
+	<stdlib.h>
+
