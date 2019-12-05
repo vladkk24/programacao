@@ -17,46 +17,79 @@ int ler_numero(char*, int, int);
 //void mostrar_notas_negativas(int[], int);
 void ler_dados_estudante(t_estudante[],int);
 void mostrar_dados_estudantes(t_estudante[],int);
+void alterar_nota_estudante(t_estudante[],int);
+float percentagem_notas_positivas(t_estudante[],int);
+float media_notas(t_estudante[],int);
+int nota_mais_baixa(t_estudante[],int);
+int nota_mais_alta(t_estudante[],int);
+
 
 int main()
 {
 //    int notas_estudantes[MAX_NOTAS], opcao, limite;
+    char resposta;
     t_estudante estudantes[120];
     int atualmente = 0;
 
-    ler_dados_estudante(estudantes, atualmente);
-    atualmente ++;
-    ler_dados_estudante(estudantes, atualmente);
-    atualmente ++;
-    mostrar_dados_estudantes(estudantes, atualmente);
+    do {
+
+
+    resposta = menu();
+
+    switch (resposta){
+
+    case 1:
+        system("cls");
+        ler_dados_estudante(estudantes, atualmente);
+        atualmente ++;
+        break;
+
+    case 2:
+        system("cls");
+        mostrar_dados_estudantes(estudantes, atualmente);
+        break;
+
+    case 3:
+        system("cls");
+        alterar_nota_estudante(estudantes,atualmente);
+        break;
+
+    case 4:
+        percentagem_notas_positivas(estudantes, atualmente);
+        break;
+    }
+
+    }while(resposta!=0);
 
     return 0;
 }
 
-//int menu() {
-//    int opcao;
-//
-//    do {
-//        printf("------------- Media de notas -------------\n\n");
-//        printf("1 - Registar notas dos estudantes\n");
-//        printf("2 - Mostrar notas\n");
-//        printf("3 - Mostrar media das notas\n");
-//        printf("4 - Mostrar notas positivas\n");
-//        printf("5 - Mostrar notas negativas\n");
-//        printf("6 - Mostrar nota mais alta e nota mais baixa\n");
-//        printf("0 - Sair\n\n");
-//        printf("   OPCAO -> ");
-//        scanf("%d", &opcao);
-//
-//        if(opcao < 0 || opcao > 6) {
-//            system("cls");
-//            printf("Opcao invalida. Tente novamente.\n\n");
-//        }
-//    } while(opcao < 0 || opcao > 6);
-//
-//    return opcao;
-//}
-//
+int menu() {
+    int opcao;
+
+    do {
+        printf("|-------------------------------------------|\n");
+        printf("|1 - Inserir dados dos estudantes           |\n");
+        printf("|2 - Mostrar dados dos estudantes           |\n");
+        printf("|3 - Alterar notas finais dos estudantes    |\n");
+        printf("|4 - Percentagem de positivas               |\n");
+        printf("|5 - Gravar dados em ficheiro               |\n");
+        printf("|6 - Ler dados de ficheiro                  |\n");
+        printf("|0 - Sair                                   |\n");
+        printf("|-------------------------------------------|\n");
+        printf("   OPCAO -> ");
+
+        scanf("%d", &opcao);
+
+        if(opcao < 0 || opcao > 6) {
+            system("cls");
+            printf("Opcao invalida. Tente novamente.\n\n");
+        }
+    } while(opcao < 0 || opcao > 6);
+
+    return opcao;
+}
+
 int ler_numero(char* mensagem, int limite_inferior, int limite_superior) {
     int numero;
 
@@ -75,46 +108,70 @@ int ler_numero(char* mensagem, int limite_inferior, int limite_superior) {
     return numero;
 }
 
-void ler_dados_estudante(t_estudante estudantes[],int atualmente) {
+void ler_dados_estudante(t_estudante v_estudantes[],int atualmente) {
 
-    estudantes[atualmente].numero = ler_numero("Introduza o numero do estudante\n",2190000,2199999);
+    int contador;
+
+    v_estudantes[atualmente].numero = ler_numero("Introduza o numero do estudante\n",2190000,2199999);
+    for (contador = 0;contador <atualmente; contador++){
+        if (v_estudantes[atualmente].numero == v_estudantes[contador].numero){
+            do{
+                printf("O numero que introduziu ja existe!\n");
+                v_estudantes[atualmente].numero=ler_numero("Introduza o numero do estudante\n",2190000,2199999);
+            }while(v_estudantes[atualmente].numero ==v_estudantes[contador].numero);
+        }
+
+}
     printf("Introduza o nome do estudante\n");
     fflush(stdin);
-    gets(estudantes[atualmente].nome);
-    estudantes[atualmente].nota_final = ler_numero("Introduza a nota do aluno\n",0,20);
+    gets(v_estudantes[atualmente].nome);
+    v_estudantes[atualmente].nota_final = ler_numero("Introduza a nota do aluno\n",0,20);
 
 }
 
-void mostrar_dados_estudantes(t_estudante estudantes[], int atualmente) {
+void mostrar_dados_estudantes(t_estudante v_estudantes[], int atualmente) {
 
     int contador;
 
     printf("\n");
 
     for(contador = 0; contador < atualmente; contador++) {
-        printf("\nNumero %i",estudantes[contador].numero);
-        printf("\nNome %s",estudantes[contador].nome);
-        printf("\nNota %i",estudantes[contador].nota_final);
-        printf("\n");
+        printf("\nNumero %i",v_estudantes[contador].numero);
+        printf("\nNome %s",v_estudantes[contador].nome);
+        printf("\nNota %i",v_estudantes[contador].nota_final);
+        printf("\n\n");
     }
 }
 
-//void calcular_media_notas(int notas_estudantes[], int limite) {
-//    int i, soma = 0;
-//    float resultado;
-//
-//    for(i = 0; i < limite; i++) {
-//        soma += notas_estudantes[i];
-//    }
-//
-//    resultado = (float) soma / limite;
-//
-//    system("cls");
-//    printf("\nMedia das %d notas: %.2f\n", limite, resultado);
-//    printf("\nPrima qualquer tecla para continuar.");
-//    fflush(stdin);
-//    getch();
-//}
+
+void alterar_nota_estudante(t_estudante v_estudantes[],int atualmente){
+
+    int contador, desejado;
+
+    desejado=ler_numero("Introduza o numero que pretende pesquisar\n",2190000,2199999);
+
+    for (contador = 0;contador < atualmente; contador ++){
+        if (v_estudantes[contador].numero == desejado)
+            v_estudantes[contador].nota_final= ler_numero("Introduza a nota que deseja\n",0,20);
+    }
+}
+
+
+float percentagem_notas_positivas(t_estudante v_estudantes[],int atualmente) {
+
+    int contador;
+
+    float resultado = 0;
+
+    for(contador = 0; contador <atualmente; contador ++ ) {
+            if (v_estudantes[contador].nota_final >9.5)
+                resultado = resultado +1;
+    }
+    resultado = resultado / atualmente;
+    resultado = resultado * 100;
+    system("cls");
+    printf("A percentagem de positivas na turma e de %i\n.",resultado);
+}
 //
 //void calcular_nota_mais_alta(int notas_estudantes[], int limite) {
 //    int i, nota_mais_alta = 0;
